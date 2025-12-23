@@ -154,6 +154,25 @@ def dashboard():
     data = cursor.fetchall()
     return render_template("dashboard.html", images=data)
 
+# ---------------- REGISTER ----------------
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        user = request.form.get("username")
+        pwd = request.form.get("password")
+        confirm = request.form.get("confirm_password")
+
+        if pwd != confirm:
+            return render_template("register.html", error="Passwords do not match")
+
+        if user in USERS:
+            return render_template("register.html", error="User already exists")
+
+        USERS[user] = pwd   # demo storage (later move to DB)
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(debug=True)
